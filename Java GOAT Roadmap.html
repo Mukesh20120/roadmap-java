@@ -1,0 +1,688 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Java GOAT Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a compiler-log tool — one narrow column, "Today" queue on top, the full roadmap as collapsible phases below */
+:root{
+  --bg:#f5f7f6; --surface:#ffffff; --line:#dbe2df; --fg:#17201c; --muted:#5b6964;
+  --accent:#1f7a4d; --accent-soft:#e3f1e9; --warn:#a2591a; --warn-soft:#f8ecdf; --skip:#7a8580;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111614; --surface:#18201d; --line:#2a3531; --fg:#e4ece8; --muted:#94a39d;
+  --accent:#4fbf86; --accent-soft:#1b3328; --warn:#e3a061; --warn-soft:#3a2a1b; --skip:#7d8a85; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111614; --surface:#18201d; --line:#2a3531; --fg:#e4ece8; --muted:#94a39d;
+  --accent:#4fbf86; --accent-soft:#1b3328; --warn:#e3a061; --warn-soft:#3a2a1b; --skip:#7d8a85; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
+h1{font-size:clamp(1.6rem,4vw,2.2rem);margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 .mono{font-family:var(--f-mono);color:var(--accent);font-weight:600}
+.lede{color:var(--muted);margin:6px 0 0;max-width:62ch}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:20px}
+.stat{background:var(--surface);padding:12px 14px}
+.stat b{display:block;font-family:var(--f-mono);font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.overall{margin-top:12px}
+.tabs{display:flex;gap:4px;margin-top:24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs button{font:600 .9rem var(--f-body);background:none;border:0;color:var(--muted);padding:10px 12px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.tabs button:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.panel{padding-top:20px}
+.target{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.target label{font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:600 .9rem var(--f-mono);background:var(--surface);color:var(--fg);border:0;border-left:1px solid var(--line);width:38px;height:34px;cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.hint{color:var(--muted);font-size:.85rem}
+.notice{border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:.92rem}
+.notice.ok{background:var(--accent-soft)}
+.notice.stop{background:var(--warn-soft);color:var(--fg)}
+.task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+.task:first-child{border-top:0}
+.task input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);cursor:pointer}
+.task .t{font-weight:600}
+.task .d{color:var(--muted);font-size:.9rem;margin-top:2px}
+.task .meta{font:400 .72rem var(--f-mono);color:var(--muted);text-align:right;white-space:nowrap}
+.task .meta button{display:block;margin-top:4px;margin-left:auto;font:500 .72rem var(--f-body);color:var(--muted);background:none;border:1px solid var(--line);border-radius:5px;padding:1px 6px;cursor:pointer}
+.task.done .t{text-decoration:line-through;color:var(--muted)}
+.task.skipped .t{color:var(--skip);font-style:italic}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px 16px}
+.where{font:400 .72rem var(--f-mono);color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.recall{margin-top:20px}
+.recall h3,.backup h3{font-size:.95rem;margin:0 0 6px}
+.recall ul{margin:0;padding-left:18px;color:var(--muted)}
+details.phase{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:10px}
+details.phase>summary{list-style:none;cursor:pointer;padding:14px 16px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}
+details.phase>summary::-webkit-details-marker{display:none}
+.pn{font:600 .8rem var(--f-mono);color:var(--accent);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+.ph{font-weight:600}
+.pg{font-size:.85rem;color:var(--muted)}
+.pc{font:400 .8rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.pc .bar{width:70px;margin-top:5px}
+.pbody{padding:0 16px 10px}
+.mod{font:600 .74rem var(--f-body);text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:14px 0 2px;padding-top:12px;border-top:1px dashed var(--line)}
+.mod:first-child{border-top:0;padding-top:0}
+.rules ol{padding-left:20px;max-width:65ch}
+.rules li{margin-bottom:8px}
+.backup{margin-top:24px}
+.backup textarea{width:100%;min-height:70px;font:400 .78rem var(--f-mono);background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px}
+.btn{font:600 .85rem var(--f-body);background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:7px;padding:7px 12px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.9rem;max-width:calc(100% - 32px)}
+code{font-family:var(--f-mono);font-size:.88em}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Java <span class="mono">→</span> Spring Boot, one 15‑minute task at a time</h1>
+    <p class="lede">Core Java and OOP revision, then modern Java 21/25, Spring, Spring Boot 4, data, security, testing, production, microservices and Spring AI. Every task is small enough to do without planning. Do at least 1 a day, never more than 6.</p>
+    <div class="stats">
+      <div class="stat"><b id="sDone">0</b><span>Tasks done</span></div>
+      <div class="stat"><b id="sToday">0/3</b><span>Today</span></div>
+      <div class="stat"><b id="sStreak">0</b><span>Day streak</span></div>
+      <div class="stat"><b id="sLeft">–</b><span>Days left at target</span></div>
+    </div>
+    <div class="overall bar" aria-hidden="true"><i id="overallBar"></i></div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-today" aria-selected="true" data-tab="today">Today</button>
+    <button role="tab" id="tab-map" aria-selected="false" data-tab="map">Full roadmap</button>
+    <button role="tab" id="tab-rules" aria-selected="false" data-tab="rules">How to use</button>
+  </div>
+
+  <section class="panel" id="p-today">
+    <div class="target">
+      <label>Daily target</label>
+      <div class="seg" id="seg"></div>
+      <span class="hint">min 1 · max 6</span>
+    </div>
+    <div id="todayNotice"></div>
+    <div class="card" id="todayList"></div>
+    <div class="recall card" style="padding:14px 16px" id="recallBox" hidden>
+      <h3>2‑minute recall before you start</h3>
+      <p class="hint" style="margin:0 0 6px">Explain each of these out loud without looking. If you can't, re-read your notes for it.</p>
+      <ul id="recallList"></ul>
+    </div>
+  </section>
+
+  <section class="panel" id="p-map" hidden>
+    <div id="phases"></div>
+  </section>
+
+  <section class="panel rules" id="p-rules" hidden>
+    <ol>
+      <li><b>Open "Today" and do the tasks in order.</b> The queue always shows the next unfinished tasks, so there is nothing to decide.</li>
+      <li><b>Minimum 1 per day</b> keeps the streak alive. Your daily target (1–6) sets how many show up. After 6 the page stops you for the day.</li>
+      <li><b>Every task produces something:</b> a class, a test, a note, or a commit. Keep one GitHub repo, <code>java-goat-journey</code>, with a folder per phase, and commit after each task.</li>
+      <li><b>Already know a topic?</b> Press "Skip" to mark it known. Skipped tasks don't count toward the daily limit.</li>
+      <li><b>Recall box:</b> it picks tasks you finished about 3 and 7 days ago. Two minutes of saying them out loud is what makes the material stick.</li>
+      <li><b>"Teach it" tasks</b> close each phase: a short Medium draft or video outline. You already write and teach, so use that to lock it in.</li>
+      <li><b>Sources:</b> the official docs (dev.java, docs.spring.io, spring.io/guides) plus the JDK source in IntelliJ (Ctrl/Cmd+click into <code>HashMap</code>, <code>ArrayList</code>). Versions targeted: Java 25 LTS, Spring Boot 4.x, Spring Framework 7.</li>
+    </ol>
+    <div class="backup card" style="padding:14px 16px">
+      <h3>Back up your progress</h3>
+      <p class="hint" style="margin:0">Progress is saved in this browser only. Copy the code below now and then (paste it in your notes), and paste it back here on a new device.</p>
+      <textarea id="backupText" aria-label="Progress code"></textarea>
+      <div class="row">
+        <button class="btn" id="copyBtn">Copy progress code</button>
+        <button class="btn primary" id="restoreBtn">Restore from pasted code</button>
+        <span class="hint" id="backupMsg"></span>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// Each task: "Title | What to do → what you end up with | minutes(optional, default 15)"
+const ROADMAP = [
+{n:"00",name:"Setup",goal:"Tools ready, repo created",mods:[
+ ["Environment",[
+  "Install JDK 25 | Install Temurin JDK 25 (LTS), set JAVA_HOME, run java -version and javac -version → screenshot in repo README",
+  "IntelliJ IDEA setup | Install IntelliJ, create a plain Java project, learn Run, Debug, Find Action and Go to Declaration shortcuts → note the 5 shortcuts in README",
+  "Journey repo | Create GitHub repo java-goat-journey with folders 01-core … 18-capstone and a progress log in README → first commit"]]]},
+{n:"01",name:"Core Java refresh",goal:"How Java runs, types, strings, memory",mods:[
+ ["How Java runs",[
+  "JDK vs JRE vs JVM | Draw a box diagram of source → javac → bytecode → JVM (class loader, interpreter, JIT) → diagram.md",
+  "Compile by hand | Write Hello.java, compile with javac and run with java from the terminal, no IDE → commit",
+  "Peek at bytecode | Run javap -c on Hello.class and annotate 5 instructions you recognise → bytecode-notes.md",
+  "main() anatomy | Explain each word of public static void main(String[] args); try the Java 25 compact form void main() → notes + file"]],
+ ["Types & variables",[
+  "Primitives table | Write all 8 primitives with size, range and default value; trigger an int overflow on purpose → Primitives.java",
+  "Wrappers & autoboxing | Show autoboxing, unboxing, and a NullPointerException from unboxing null → Boxing.java",
+  "Integer cache trap | Compare Integer 127 vs 128 with == and equals, explain the result in a comment → IntegerCache.java",
+  "Casting | Widening vs narrowing casts, (int) 3.99, (byte) 200, char ↔ int → Casting.java",
+  "var keyword | Use var in 4 places it works and 2 where it won't compile; note why → Var.java"]],
+ ["Strings",[
+  "String pool & immutability | Prove immutability; compare literal vs new String() with == and intern() → StringPool.java",
+  "StringBuilder benchmark | Concatenate 100k strings with + vs StringBuilder, time both → Benchmark.java + result",
+  "String API drill | Use split, strip, chars, repeat, join, indexOf, isBlank on one sentence → StringApi.java",
+  "Text blocks & formatted | Build a JSON string with a text block and fill it with formatted() → TextBlocks.java"]],
+ ["Control flow, arrays, methods",[
+  "Switch expressions | Rewrite an old switch into an arrow switch expression with yield → Switch.java",
+  "Arrays utility | Use Arrays.sort, binarySearch, fill, copyOfRange, asList, toString on one array → ArraysDemo.java",
+  "2D arrays & varargs | Matrix transpose, and a sum(int... nums) method → Matrix.java",
+  "Pass-by-value proof | Show a method can mutate an object's field but not reassign the caller's reference → PassByValue.java",
+  "Overloading resolution | Overload print(int), print(long), print(Integer), print(Object); predict which runs for print(5) → Overload.java"]],
+ ["Memory basics",[
+  "Stack vs heap | Draw stack frames and heap objects for a 3-method call chain → memory.md",
+  "GC eligibility | Write 4 cases where an object becomes eligible for GC → GcEligible.java",
+  "final keyword | final variable, final reference to mutable object, final method, final class → Final.java",
+  "Teach it: Core | Write a 300-word Medium draft: 'Java strings, the 3 traps I forgot' → draft.md"]]]},
+{n:"02",name:"OOP in depth",goal:"Classes, the 4 pillars, Object contract, modern types, SOLID",mods:[
+ ["Classes & objects",[
+  "Constructors | Default, parameterised, and this(...) chaining in one class → Account.java",
+  "Initialisation order | Static block, instance block, constructor, field initialiser; predict print order, then run → InitOrder.java",
+  "static members | Static counter of created objects; why static methods can't use this → Counter.java",
+  "Packages & access | Table of private / default / protected / public across same class, package, subclass, world → access.md + code"]],
+ ["Encapsulation",[
+  "Getters with invariants | BankAccount with private balance; withdraw rejects overdraft → BankAccount.java",
+  "Immutable class | Apply the 5 rules (final class, private final fields, no setters, defensive copies, safe getters) → Money.java",
+  "Defensive copies | Break an 'immutable' class through a mutable List field, then fix it → DefensiveCopy.java"]],
+ ["Inheritance",[
+  "extends & super() | Employee → Manager, call super constructor and super.method() → Inheritance.java",
+  "Overriding rules | Demonstrate access widening, covariant return, exception narrowing, @Override → OverrideRules.java",
+  "Static hiding | Show static methods are hidden, not overridden; fields aren't polymorphic → Hiding.java",
+  "Composition over inheritance | Refactor a Stack extends ArrayList into Stack has-a list → Composition.java"]],
+ ["Polymorphism",[
+  "Runtime dispatch | Shape[] with Circle, Square; call area() in a loop → Shapes.java",
+  "Up/downcasting | Safe downcast with instanceof pattern matching; trigger a ClassCastException → Casting2.java",
+  "Overloading vs overriding | One example of each, side by side, with the 'decided at compile vs runtime' note → Poly.java"]],
+ ["Abstraction",[
+  "Abstract class | Abstract Payment with template step + abstract pay() → Payment.java",
+  "Interfaces | Interface with default, static and private methods → Notifier.java",
+  "Diamond with defaults | Two interfaces with same default method; resolve with X.super.m() → Diamond.java",
+  "Abstract class vs interface | Write a 6-row decision table with one real example each → abstraction.md",
+  "Functional interface | Define @FunctionalInterface Validator and pass a lambda → Validator.java"]],
+ ["The Object contract",[
+  "toString | Override toString for Employee; compare with default output → commit",
+  "equals & hashCode | Implement both for Point using Objects.equals/hash → Point.java",
+  "Break HashSet | Override equals without hashCode, add duplicates to a HashSet, explain → BrokenSet.java",
+  "Comparable | Make Employee Comparable by salary; sort a list → commit",
+  "Shallow vs deep copy | Copy constructor vs clone() on an object holding a list → Copy.java"]],
+ ["Nested types & enums",[
+  "Nested classes | Static nested, inner, local and anonymous class in one file → Nested.java",
+  "Enum with fields | Planet enum with mass, radius and a method → Planet.java",
+  "Enum with behaviour | Operation enum where each constant overrides apply() → Operation.java",
+  "EnumMap & EnumSet | Count orders per Status with EnumMap → EnumColl.java"]],
+ ["Modern Java types",[
+  "Records | Record with compact constructor validation and a static factory → Customer.java",
+  "Sealed hierarchy | sealed interface Shape permits Circle, Rect, Triangle (records) → Sealed.java",
+  "Pattern matching switch | Exhaustive switch over the sealed Shape with record deconstruction → area() → PatternSwitch.java",
+  "Guards & null in switch | Add when guards and a case null branch → commit"]],
+ ["SOLID",[
+  "S: single responsibility | Split an Invoice class that calculates, prints and saves → SRP.java",
+  "O: open/closed | Discount types via strategy instead of if/else chain → OCP.java",
+  "L: Liskov | Rectangle/Square violation, then a fix → LSP.java",
+  "I: interface segregation | Split a fat Machine interface (print, scan, fax) → ISP.java",
+  "D: dependency inversion | OrderService depends on PaymentGateway interface, inject impl via constructor → DIP.java (this is Spring's idea)"]],
+ ["OOP mini project: Parking Lot",[
+  "Requirements & classes | List requirements; sketch classes: ParkingLot, Floor, Spot, Vehicle, Ticket → design.md | 20",
+  "Model the entities | Write Vehicle (sealed), Spot, Ticket records/classes → code",
+  "Park & unpark | Implement allocation strategy and fee calculation → code | 20",
+  "Teach it: OOP | 300-word draft: 'equals and hashCode, the bug that breaks HashMap' → draft.md"]]]},
+{n:"03",name:"Core APIs",goal:"Exceptions, generics, collections internals, functional Java",mods:[
+ ["Exceptions",[
+  "Hierarchy | Draw Throwable → Error / Exception → RuntimeException with 3 examples each → exceptions.md",
+  "Checked vs unchecked | Same file-read code with both styles; when to use which → Checked.java",
+  "finally order | Predict output when try returns, catch throws, finally returns → FinallyQuiz.java",
+  "try-with-resources | Custom AutoCloseable resource; show close order and suppressed exceptions → Twr.java",
+  "Custom exceptions | InsufficientFundsException with chaining (cause) → commit",
+  "Exception best practices | List 6 rules (don't swallow, wrap with context…) with a bad/good snippet each → practices.md"]],
+ ["Generics",[
+  "Generic class | Box<T> and Pair<K,V> → Generics.java",
+  "Generic methods | static <T> T firstOrDefault(List<T>, T) → commit",
+  "Bounded types | <T extends Comparable<T>> T max(List<T>) → commit",
+  "Wildcards & PECS | copy(List<? super T> dst, List<? extends T> src) with comments → Pecs.java | 20",
+  "Type erasure | Show why new T() and instanceof List<String> don't compile → Erasure.java"]],
+ ["Collections",[
+  "Collection hierarchy | Diagram Iterable → Collection → List/Set/Queue, and Map separately → collections.md",
+  "ArrayList internals | Read ArrayList.grow() in the JDK source; note the growth factor → notes",
+  "ArrayList vs LinkedList | Benchmark middle inserts and random gets → Bench.java",
+  "HashMap internals 1 | Read hash(), putVal(); note buckets, load factor 0.75, resize → notes | 20",
+  "HashMap internals 2 | Treeification at 8 nodes; why keys must be immutable → notes + demo",
+  "LinkedHashMap LRU | Build an LRU cache with removeEldestEntry (also a LeetCode classic) → LruCache.java",
+  "TreeMap & Comparator | Sort employees by dept then salary with Comparator.comparing().thenComparing() → commit",
+  "Sets | HashSet vs LinkedHashSet vs TreeSet ordering demo → commit",
+  "PriorityQueue | Top-K frequent elements with a min-heap → TopK.java",
+  "ArrayDeque | Use as stack and as queue; why not Stack class → commit",
+  "Fail-fast iterators | Trigger ConcurrentModificationException; fix with removeIf and Iterator.remove → commit",
+  "Immutable collections | List.of vs Collections.unmodifiableList vs List.copyOf → commit",
+  "Sequenced collections | getFirst, getLast, reversed() on List, LinkedHashSet, LinkedHashMap (Java 21) → commit"]],
+ ["Functional Java",[
+  "Lambdas | Replace 3 anonymous classes with lambdas; effectively-final rule → commit",
+  "Core functional interfaces | Function, Predicate, Consumer, Supplier, BiFunction, UnaryOperator, one line each → Fi.java",
+  "Method references | All 4 kinds: static, bound, unbound, constructor → MethodRefs.java",
+  "Streams basics | filter, map, reduce on employees; compare with your JS array methods → Streams1.java",
+  "Laziness | Add peek() logging to show streams run per element and only on terminal op → commit",
+  "Collectors 1 | groupingBy dept with counting(), averagingDouble → Streams2.java",
+  "Collectors 2 | partitioningBy, toMap with merge function, joining → commit",
+  "flatMap | Flatten orders → items, distinct product names → commit",
+  "Sorting & limiting | sorted with comparator, skip, limit for pagination → commit",
+  "Optional correctly | map, flatMap, orElseGet, orElseThrow; 4 anti-patterns to avoid → OptionalDemo.java",
+  "Stream exercise set | Solve 5 small problems (2nd highest salary, word frequency…) with streams → StreamDrills.java | 20",
+  "Parallel streams | Benchmark sum of 10M with and without parallel; note when not to use → commit"]],
+ ["Everyday APIs",[
+  "Date-Time API | LocalDate, LocalDateTime, ZonedDateTime, Instant; IST vs UTC conversion → Dates.java",
+  "Duration & formatting | Age calculator with Period and DateTimeFormatter → commit",
+  "BigDecimal for money | Show 0.1+0.2 with double, fix with BigDecimal and RoundingMode → Money2.java",
+  "Files & Path (NIO) | Read lines, write file, walk a directory with Files API → FilesDemo.java",
+  "Teach it: Streams | 300-word draft: 'Java streams for JavaScript developers' → draft.md"]]]},
+{n:"04",name:"Concurrency & the JVM",goal:"Threads to virtual threads, memory model, GC",mods:[
+ ["Threads",[
+  "Create threads | Thread subclass vs Runnable vs lambda; start() vs run() → Threads1.java",
+  "Thread lifecycle | Print states NEW → RUNNABLE → TIMED_WAITING → TERMINATED → commit",
+  "Race condition | Two threads increment a counter 1M times; see wrong result → Race.java",
+  "synchronized | Fix the race with synchronized method and block; explain the monitor → commit",
+  "volatile & visibility | Stop-flag example that hangs without volatile → Visibility.java",
+  "Atomics | Fix the counter with AtomicInteger; compare speed → commit",
+  "ReentrantLock | tryLock with timeout; ReadWriteLock for a cache → Locks.java",
+  "Deadlock | Create a deadlock with two locks, then fix by lock ordering → Deadlock.java",
+  "wait/notify | Producer-consumer with wait/notify, then with BlockingQueue → ProdCons.java | 20"]],
+ ["Executors & async",[
+  "ExecutorService | Fixed pool running 10 tasks; proper shutdown → Pool.java",
+  "Callable & Future | Submit callables, get results, handle timeout → commit",
+  "CompletableFuture 1 | supplyAsync, thenApply, thenAccept; map to JS Promise.then → Cf1.java",
+  "CompletableFuture 2 | thenCompose vs thenCombine, allOf, exceptionally → Cf2.java",
+  "Concurrent collections | ConcurrentHashMap merge/compute for a word counter → commit",
+  "Coordinators | CountDownLatch and Semaphore, one example each → commit"]],
+ ["Modern concurrency",[
+  "Virtual threads | Run 10,000 sleeping tasks with Executors.newVirtualThreadPerTaskExecutor, compare to fixed pool → Vt.java",
+  "Pinning & when not to | Note what virtual threads don't help (CPU-bound work) and pinning cases → notes",
+  "Scoped values | Pass a request id with ScopedValue instead of ThreadLocal (final in Java 25) → commit",
+  "Structured concurrency | Fork two subtasks with StructuredTaskScope (preview API, enable --enable-preview) → commit"]],
+ ["Inside the JVM",[
+  "JVM memory areas | Heap (young/old), metaspace, stacks, code cache diagram → jvm.md",
+  "Class loading | Bootstrap, platform, app loaders; print getClassLoader() for 3 classes → commit",
+  "Garbage collectors | G1 vs ZGC vs Parallel: one line each, when to pick → notes",
+  "JVM flags | Run with -Xmx64m and trigger OutOfMemoryError; read the message → commit",
+  "Profiling | Record a Java Flight Recorder file and open it in JDK Mission Control or IntelliJ profiler → screenshot | 20",
+  "Teach it: Concurrency | 300-word draft: 'Virtual threads explained for Node.js devs' → draft.md"]]]},
+{n:"05",name:"Build tools, testing & logging",goal:"Maven, Gradle, JUnit 5, Mockito",mods:[
+ ["Maven & Gradle",[
+  "Maven project | mvn archetype:generate; walk through pom.xml sections → notes",
+  "Maven lifecycle | Run validate, compile, test, package, install; see target/ → notes",
+  "Dependencies & scopes | Add a library; compile, test, provided, runtime scopes; mvn dependency:tree → commit",
+  "Plugins | Configure compiler plugin for Java 25 and the surefire plugin → commit",
+  "Multi-module build | Parent pom with core and app modules → commit | 20",
+  "Gradle basics | Same project in Gradle Kotlin DSL; compare with Maven → commit"]],
+ ["Testing",[
+  "First JUnit 5 test | Test a Calculator with assertEquals and @DisplayName → commit",
+  "Lifecycle & assertions | @BeforeEach, @AfterAll, assertAll, assertThrows → commit",
+  "Parameterized tests | @ParameterizedTest with @CsvSource for a validator → commit",
+  "AssertJ | Rewrite 3 assertions in fluent AssertJ style → commit",
+  "Mockito basics | Mock a repository in a service test; when/thenReturn, verify → commit",
+  "ArgumentCaptor & spies | Capture the saved entity and assert fields → commit",
+  "TDD kata | Build a String Calculator test-first, red → green → refactor → commit | 20",
+  "Coverage | Add JaCoCo, open the report, cover one missed branch → commit"]],
+ ["Logging",[
+  "SLF4J + Logback | Log at 5 levels; parameterised messages instead of concatenation → commit",
+  "Teach it: Testing | 300-word draft: 'JUnit 5 + Mockito, coming from Jest' → draft.md"]]]},
+{n:"06",name:"SQL, JDBC & the web layer underneath",goal:"What Spring abstracts away",mods:[
+ ["SQL & JDBC",[
+  "Postgres in Docker | docker run postgres, connect with psql or DBeaver, create a schema → commit",
+  "SQL refresher | Joins, GROUP BY/HAVING, a window function on a sample orders table → queries.sql | 20",
+  "Indexes & EXPLAIN | Add an index, compare EXPLAIN ANALYZE before/after → notes",
+  "Transactions & isolation | ACID, 4 isolation levels, dirty/non-repeatable/phantom reads table → notes",
+  "JDBC connect | DriverManager, Statement, ResultSet; read rows into records → Jdbc1.java",
+  "PreparedStatement | Show SQL injection with Statement, fix with PreparedStatement → commit",
+  "JDBC transactions | setAutoCommit(false), commit, rollback on transfer between accounts → commit",
+  "Connection pool | Swap to HikariCP; why pooling matters → commit",
+  "DAO pattern | UserDao interface + JDBC implementation → commit"]],
+ ["Web underneath",[
+  "Servlet model | Note: Tomcat, servlet, filter, request thread; where Spring's DispatcherServlet sits → web.md",
+  "JDK HttpServer | Tiny JSON endpoint with com.sun.net.httpserver; feel the boilerplate Spring removes → commit"]]]},
+{n:"07",name:"Spring Core",goal:"IoC, DI, beans, AOP, proxies",mods:[
+ ["IoC & DI",[
+  "Why Spring | Write tightly-coupled code, then hand-wire DI in a main(); list what a container would automate → notes",
+  "First ApplicationContext | Plain Spring (no Boot): AnnotationConfigApplicationContext with @Configuration → commit",
+  "@Component & scanning | @Component, @Service, @Repository with @ComponentScan → commit",
+  "@Bean methods | Define a third-party object as a @Bean; @Bean vs @Component → commit",
+  "Injection styles | Constructor vs setter vs field injection; why constructor wins → notes + code",
+  "@Qualifier & @Primary | Two PaymentGateway beans; resolve ambiguity both ways → commit",
+  "Inject collections | Inject List<Notifier> and Map<String, Notifier> of all beans → commit (strategy pattern for free)"]],
+ ["Beans",[
+  "Bean scopes | singleton vs prototype; print hashCodes → commit",
+  "Prototype in singleton | Show the bug, fix with ObjectProvider → commit",
+  "Lifecycle hooks | @PostConstruct, @PreDestroy, InitializingBean; log the order → commit",
+  "BeanPostProcessor | Log every bean as it's created → commit",
+  "@Value & properties | Read app.properties values, defaults with ${x:default} → commit",
+  "Profiles | dev and prod beans with @Profile; switch via spring.profiles.active → commit",
+  "Conditional beans | @Conditional / @ConditionalOnProperty idea → notes (how auto-config works)",
+  "Application events | Publish OrderPlacedEvent, handle with @EventListener → commit"]],
+ ["AOP & proxies",[
+  "AOP vocabulary | Aspect, advice, join point, pointcut, weaving, one line each → aop.md",
+  "Logging aspect | @Around advice timing every @Service method → commit",
+  "Pointcut expressions | execution(), within(), @annotation() with a custom @Timed → commit",
+  "JDK vs CGLIB proxy | Print bean class names; when each is used → notes",
+  "Self-invocation trap | Call an advised method from the same class; see advice skipped; explain → commit",
+  "Teach it: Spring Core | 300-word draft: 'Spring DI is just constructor injection with a map' → draft.md"]]]},
+{n:"08",name:"Spring Boot fundamentals",goal:"Auto-configuration, config, actuator",mods:[
+ ["Boot basics",[
+  "Initializr project | start.spring.io: Boot 4.x, Java 25, Web + Actuator + DevTools; run it → commit",
+  "@SpringBootApplication | Break it into @Configuration, @EnableAutoConfiguration, @ComponentScan → notes",
+  "Auto-config report | Run with --debug, read positive/negative matches for 3 classes → notes",
+  "Starters | Open spring-boot-starter-web's dependencies; what it pulls in → notes",
+  "application.yml | Server port, app name, nested config; YAML vs properties → commit",
+  "@ConfigurationProperties | Typed AppProperties record with validation → commit",
+  "Profiles in Boot | application-dev.yml and application-prod.yml; override order (env vars, args) → notes",
+  "DevTools | Live restart; what it skips in production → notes",
+  "Actuator | Expose health, info, metrics; add a custom HealthIndicator → commit",
+  "Executable jar | mvn package, run java -jar, inspect jar layout → notes",
+  "Write your own starter | Tiny auto-configuration module with @AutoConfiguration + imports file → commit | 20"]]]},
+{n:"09",name:"REST APIs with Spring MVC",goal:"Production-shaped HTTP APIs",mods:[
+ ["Controllers",[
+  "First @RestController | GET /api/hello returning a record as JSON → commit",
+  "Path & query params | @PathVariable, @RequestParam with defaults and optional → commit",
+  "POST with @RequestBody | Create a Book from JSON; return 201 with Location header → commit",
+  "ResponseEntity | Return 200, 201, 204, 404 correctly → commit",
+  "PUT, PATCH, DELETE | Full CRUD on in-memory books → commit",
+  "Layered architecture | Split into controller → service → repository packages → commit",
+  "DTOs with records | Request/response DTOs separate from domain; map manually → commit",
+  "MapStruct | Replace manual mapping with a MapStruct mapper → commit"]],
+ ["Validation & errors",[
+  "Bean Validation | @Valid with @NotBlank, @Email, @Size, @Positive on DTOs → commit",
+  "Custom validator | @ValidIsbn annotation + ConstraintValidator → commit",
+  "Global error handling | @RestControllerAdvice returning ProblemDetail (RFC 9457) → commit",
+  "Error response shape | Field errors list in ProblemDetail for 400s → commit"]],
+ ["API design",[
+  "Pagination & sorting | ?page=&size=&sort= with a Page response → commit",
+  "API versioning | Spring Framework 7 built-in versioning (header or path), v1 and v2 of one endpoint → commit",
+  "OpenAPI docs | springdoc-openapi, open Swagger UI, annotate one endpoint → commit",
+  "CORS | Allow your React dev origin globally → commit",
+  "File upload | Multipart upload with size limits, save to disk → commit",
+  "Jackson config | Date format, ignore unknown fields, @JsonProperty → commit"]],
+ ["Calling other APIs",[
+  "RestClient | Call a public API with RestClient, map to a record → commit",
+  "HTTP interface clients | Declare an interface with @GetExchange, register with @ImportHttpServices → commit",
+  "Timeouts & errors | Configure timeouts and onStatus handlers → commit",
+  "Teach it: REST | 300-word draft: 'Express.js to Spring Boot: a REST API side by side' → draft.md"]]]},
+{n:"10",name:"Data with Spring Data JPA",goal:"JPA done right: relationships, transactions, performance",mods:[
+ ["JPA basics",[
+  "ORM concepts | JPA vs Hibernate vs Spring Data, one paragraph → notes",
+  "First entity | @Entity Book with @Id @GeneratedValue; Postgres datasource config → commit",
+  "JpaRepository CRUD | save, findById, findAll, deleteById through the service → commit",
+  "Derived queries | findByAuthorAndYearGreaterThan, countBy, existsBy → commit",
+  "@Query | JPQL and native query with named params → commit",
+  "Show the SQL | Enable SQL logging with bind params; read what Hibernate runs → notes",
+  "Flyway migrations | V1__init.sql, ddl-auto=validate; never update in prod → commit"]],
+ ["Relationships",[
+  "@ManyToOne / @OneToMany | Author ↔ Books, owning side and mappedBy → commit",
+  "Helper methods | addBook()/removeBook() keeping both sides in sync → commit",
+  "@ManyToMany | Book ↔ Tag with a join table; why a join entity is often better → commit",
+  "Cascade & orphanRemoval | Show what each cascade type does → commit",
+  "LAZY vs EAGER | Defaults per annotation; set everything LAZY → notes"]],
+ ["Persistence context & performance",[
+  "Entity states | Transient, managed, detached, removed; demo each → commit",
+  "Dirty checking | Change a managed entity without save(); see the UPDATE → commit",
+  "N+1 problem | Reproduce N+1 by looping authors' books; count queries → commit",
+  "Fix N+1 | JOIN FETCH and @EntityGraph versions → commit",
+  "LazyInitializationException | Trigger it, then fix with DTO projection; set open-in-view=false → commit",
+  "Projections | Interface and record projections for list views → commit",
+  "Dynamic queries | Specifications for optional search filters → commit | 20",
+  "Optimistic locking | @Version, simulate concurrent update, handle the exception → commit",
+  "Auditing | @CreatedDate, @LastModifiedDate with @EnableJpaAuditing → commit",
+  "JdbcClient | Raw SQL report query with JdbcClient when JPA is the wrong tool → commit"]],
+ ["Transactions",[
+  "@Transactional basics | Transfer money; throw midway; verify rollback → commit",
+  "Rollback rules | Checked exceptions don't roll back by default; rollbackFor → commit",
+  "Propagation | REQUIRED vs REQUIRES_NEW with an audit log that must persist → commit",
+  "readOnly & isolation | readOnly=true for queries; set an isolation level → notes",
+  "Proxy trap again | @Transactional on a private or self-called method doesn't work; prove it → commit"]],
+ ["Other stores",[
+  "Redis caching | @Cacheable, @CacheEvict with Redis; TTL config → commit",
+  "Spring Data MongoDB | Same Book repo on MongoDB; compare with your Mongoose experience → commit",
+  "Teach it: JPA | 300-word draft: 'The N+1 problem in Spring Data JPA, and 2 fixes' → draft.md"]]]},
+{n:"11",name:"Spring Security",goal:"Auth that you understand, not copy-paste",mods:[
+ ["Fundamentals",[
+  "Filter chain | Add starter, list the security filters at startup → notes",
+  "SecurityFilterChain bean | Permit /public, protect /api/** → commit",
+  "Password encoding | BCrypt via PasswordEncoder; why never plain text → commit",
+  "DB users | UserDetailsService backed by a JPA User entity → commit",
+  "Authentication flow | Draw AuthenticationManager → Provider → UserDetailsService → SecurityContext → auth.md",
+  "Roles vs authorities | ROLE_ADMIN vs read:books; hasRole vs hasAuthority → commit",
+  "Method security | @PreAuthorize with SpEL, owner-only update → commit",
+  "401 vs 403 | Custom AuthenticationEntryPoint and AccessDeniedHandler returning ProblemDetail → commit",
+  "CSRF & CORS | When to disable CSRF (stateless API) and why; CORS with security → notes"]],
+ ["JWT & OAuth2",[
+  "JWT anatomy | Decode a JWT; header, payload, signature; never store secrets in it → notes",
+  "Login endpoint | /auth/login issues a signed JWT → commit | 20",
+  "Resource server | Validate JWTs with spring-boot-starter-oauth2-resource-server → commit",
+  "Stateless sessions | SessionCreationPolicy.STATELESS; test with curl → commit",
+  "Refresh tokens | Refresh flow with rotation stored in DB → commit | 20",
+  "OAuth2 login | Sign in with Google via oauth2-client → commit",
+  "Secure actuator | Lock actuator endpoints to ADMIN → commit",
+  "Teach it: Security | 300-word draft: 'Spring Security's filter chain in one diagram' → draft.md"]]]},
+{n:"12",name:"Testing Spring apps",goal:"Fast, trustworthy test suite",mods:[
+ ["Test slices",[
+  "@SpringBootTest | Full context smoke test; why it's slow → commit",
+  "@WebMvcTest | Controller test with MockMvc and @MockitoBean service → commit",
+  "Validation tests | Assert 400 and ProblemDetail fields → commit",
+  "@DataJpaTest | Repository test for a custom query → commit",
+  "Testcontainers | Real Postgres in tests with @ServiceConnection → commit | 20",
+  "Security tests | @WithMockUser and JWT-authenticated requests → commit",
+  "RestClient tests | MockRestServiceServer for an outbound call → commit",
+  "Test pyramid | Write your team's rule: what gets unit vs slice vs integration test → notes"]]]},
+{n:"13",name:"Production-grade Spring",goal:"Async, messaging, resilience, observability, Docker",mods:[
+ ["Async & scheduling",[
+  "Virtual threads in Boot | spring.threads.virtual.enabled=true; load test before/after with a slow endpoint → notes",
+  "@Async | Send email asynchronously; custom executor → commit",
+  "@Scheduled | Cron job cleaning expired tokens → commit"]],
+ ["Messaging",[
+  "Kafka concepts | Topic, partition, offset, consumer group diagram → kafka.md",
+  "Kafka in Docker | docker compose Kafka (KRaft mode) → commit",
+  "Producer | KafkaTemplate publishes OrderPlaced events as JSON → commit",
+  "Consumer | @KafkaListener with a consumer group → commit",
+  "Error handling | Retries and a dead-letter topic → commit",
+  "Outbox pattern | Save event in DB table in same transaction, publish later → commit | 20"]],
+ ["Resilience",[
+  "Retries | Spring Framework 7 @Retryable on an outbound call (enable with @EnableResilientMethods) → commit",
+  "Concurrency limits | @ConcurrencyLimit on a fragile dependency → commit",
+  "Circuit breaker | Resilience4j circuit breaker with fallback → commit",
+  "Idempotency | Idempotency-Key header for POST /payments → commit"]],
+ ["Observability",[
+  "Structured logging | JSON logs (logging.structured.format.console) → commit",
+  "Metrics | Custom Micrometer counter and timer; view /actuator/prometheus → commit",
+  "Tracing | OpenTelemetry tracing across two services; view traces → commit | 20",
+  "Correlation id | Propagate a request id into every log line → commit"]],
+ ["Deploy",[
+  "Dockerfile | Multi-stage build with a JRE base image → commit",
+  "Buildpacks | mvn spring-boot:build-image; compare image size → notes",
+  "Docker Compose support | compose.yaml auto-started by Boot in dev → commit",
+  "Externalized secrets | Env vars for DB password and JWT key; nothing in git → commit",
+  "GitHub Actions CI | Build, test, build image on push → commit",
+  "Deploy to AWS | Run the container on ECS Fargate or EC2 with RDS Postgres → live URL | 20",
+  "Native image | Build a GraalVM native image; compare startup time and memory → notes"]],
+ ["Other web styles",[
+  "WebFlux basics | Mono and Flux; one reactive endpoint → commit",
+  "Reactive vs virtual threads | When each fits; write your decision → notes",
+  "Server-Sent Events | Stream progress updates to a client → commit",
+  "WebSockets | STOMP chat endpoint with a tiny HTML client → commit",
+  "Spring for GraphQL | Schema, @QueryMapping, @SchemaMapping (you know GraphQL already) → commit",
+  "Teach it: Production | 300-word draft: 'Shipping a Spring Boot 4 app to AWS' → draft.md"]]]},
+{n:"14",name:"Architecture & design patterns",goal:"Think like a senior: patterns, LLD, microservices",mods:[
+ ["Design patterns (and where Spring uses them)",[
+  "Singleton | Enum singleton vs Spring singleton beans → commit",
+  "Builder | Builder for an immutable HttpRequest object → commit",
+  "Factory | NotificationFactory; compare with Spring BeanFactory → commit",
+  "Strategy | Pricing strategies injected as List<PricingStrategy> → commit",
+  "Observer | Hand-written observer vs ApplicationEvent → commit",
+  "Decorator | Caching decorator around a repository → commit",
+  "Adapter | Wrap a legacy SMS API behind your interface → commit",
+  "Template method | JdbcTemplate/RestTemplate idea; write your own → commit",
+  "Proxy | Hand-written proxy; then java.lang.reflect.Proxy → commit",
+  "Chain of responsibility | Validation chain; compare with servlet filters → commit"]],
+ ["Low-level design practice",[
+  "LLD: Rate limiter | Token bucket class with tests → commit | 20",
+  "LLD: Splitwise | Entities and balance simplification → commit | 20",
+  "LLD: BookMyShow | Seat locking with concurrency → commit | 20",
+  "LLD: Logger framework | Levels, appenders, chain → commit | 20"]],
+ ["Architecture",[
+  "Layered vs hexagonal | Refactor one feature into ports and adapters → commit",
+  "DDD basics | Entity, value object, aggregate, bounded context, one example each → notes",
+  "Spring Modulith | Split a monolith into modules; verify boundaries with a test → commit | 20",
+  "Monolith vs microservices | Decision note with real trade-offs → notes",
+  "API Gateway | Spring Cloud Gateway routing two services → commit",
+  "Config & discovery | Spring Cloud Config or Kubernetes config, pick one, set it up → commit",
+  "Saga pattern | Order → Payment → Inventory with compensations via events → commit | 20",
+  "Teach it: Architecture | 300-word draft: '10 design patterns hiding inside Spring' → draft.md"]]]},
+{n:"15",name:"Spring AI (your edge)",goal:"Bring your OpenAI / agent experience to Java",mods:[
+ ["Spring AI",[
+  "ChatClient | Spring AI starter for OpenAI; one prompt endpoint → commit",
+  "Prompt templates | System + user templates with variables → commit",
+  "Structured output | Map an LLM answer straight into a Java record → commit",
+  "Streaming | Stream tokens to the client with Flux / SSE → commit",
+  "Tool calling | Expose a @Tool method (order lookup) to the model → commit",
+  "Chat memory | Conversation memory advisor stored in JDBC → commit",
+  "Embeddings & PGVector | Store document embeddings in Postgres pgvector → commit | 20",
+  "RAG | QuestionAnswer advisor over your docs → commit | 20",
+  "MCP server | Expose your Spring tools as an MCP server → commit",
+  "Evaluation | Compare outputs with an evaluator, like you do with Promptfoo → commit",
+  "Teach it: Spring AI | 300-word draft: 'OpenAI SDK in Node vs Spring AI in Java' → draft.md"]]]},
+{n:"16",name:"Capstone: TaskFlow API",goal:"One full production-shaped project",mods:[
+ ["Build it",[
+  "Scope | Users, workspaces, projects, tasks, comments; write the API list → README",
+  "Schema | ER diagram and Flyway V1 migration → commit",
+  "Entities & repos | JPA entities and repositories → commit",
+  "Auth | Register, login, JWT, refresh → commit",
+  "Workspaces & roles | Owner/member permissions with method security → commit",
+  "Tasks CRUD | DTOs, validation, pagination, filters → commit",
+  "Comments & activity | Events written to an activity log → commit",
+  "Caching | Redis for hot reads with eviction → commit",
+  "Notifications | Kafka event → email consumer (Amazon SES, which you know) → commit",
+  "Live updates | WebSocket/SSE push when a task changes → commit",
+  "AI feature | 'Summarise this project' endpoint with Spring AI → commit",
+  "Tests | Slice + Testcontainers tests, 80% service coverage → commit | 20",
+  "Observability | Metrics, tracing, JSON logs → commit",
+  "Ship it | Docker, CI, deploy, OpenAPI docs live → URL | 20",
+  "Write-up | README with architecture diagram and decisions; post it on LinkedIn → link"]]]},
+{n:"17",name:"Interview & mastery loop",goal:"Prove it under pressure",mods:[
+ ["Interview drills",[
+  "Core Java round | Answer 10 core Java questions out loud, timed; note gaps → notes",
+  "OOP & SOLID round | 10 questions; whiteboard one design → notes",
+  "Collections round | Explain HashMap, ConcurrentHashMap, fail-fast vs fail-safe → notes",
+  "Concurrency round | 10 questions incl. volatile, CompletableFuture, virtual threads → notes",
+  "Spring core round | IoC, bean lifecycle, proxies, @Transactional pitfalls → notes",
+  "Spring Boot round | Auto-config, profiles, actuator, starters → notes",
+  "JPA round | N+1, lazy loading, transactions, locking → notes",
+  "Security round | JWT vs session, OAuth2 flows, filter chain → notes",
+  "System design: URL shortener in Spring | 20-minute design with DB, cache, scaling → notes | 20",
+  "System design: notification service | Use your 100K/day DayKart experience, redesigned in Spring → notes | 20",
+  "Mock interview | Record yourself on one LLD + one Spring deep dive → notes | 20",
+  "Open-source PR | Fix a small issue or docs typo in a Spring ecosystem repo → PR link | 20",
+  "Teach it: Final | Publish your best draft as a Medium article or YouTube video → link | 20"]]]}
+];
+
+// ---------- data prep ----------
+const TASKS=[]; // flat list in order
+ROADMAP.forEach(p=>{let k=0;p.mods.forEach(([mname,list])=>{list.forEach(s=>{const [t,d,m]=s.split("|").map(x=>x&&x.trim());k++;
+  TASKS.push({id:`P${p.n}.${String(k).padStart(2,"0")}`,t,d,m:+(m||15),phase:p,mod:mname});});});});
+const BYID=Object.fromEntries(TASKS.map(x=>[x.id,x]));
+const MAX=6, KEY="java-goat-roadmap-v1";
+
+// ---------- state ----------
+let S={done:{},skip:{},target:3};
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} document.getElementById("backupText").value=btoa(unescape(encodeURIComponent(JSON.stringify(S))));}
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+const daysAgo=(n)=>{const d=new Date();d.setDate(d.getDate()-n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+const doneToday=()=>Object.values(S.done).filter(d=>d===today()).length;
+const isOpen=x=>!S.done[x.id]&&!S.skip[x.id];
+let showExtra=false;
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2600);}
+
+function toggle(id,checked){
+  if(checked){
+    if(doneToday()>=MAX){toast("You've done 6 today. Stop here and let it settle; the next task will wait.");render();return;}
+    S.done[id]=today(); delete S.skip[id];
+    if(doneToday()===MAX) toast("6 done. That's the daily max. Nice work.");
+    else if(doneToday()===S.target) toast("Daily target done.");
+  } else delete S.done[id];
+  save(); render();
+}
+function skip(id){ if(S.skip[id]) delete S.skip[id]; else {S.skip[id]=1; delete S.done[id];} save(); render(); }
+
+function taskRow(x,showWhere){
+  const done=!!S.done[x.id], sk=!!S.skip[x.id];
+  const el=document.createElement("div"); el.className="task"+(done?" done":"")+(sk?" skipped":"");
+  el.innerHTML=`<input type="checkbox" id="cb-${x.id}" aria-label="Mark done: ${x.t.replace(/"/g,"")}" ${done?"checked":""}>
+   <label for="cb-${x.id}" style="cursor:pointer;min-width:0">${showWhere?`<div class="where">Phase ${x.phase.n} · ${x.phase.name} · ${x.mod}</div>`:""}<div class="t"></div><div class="d"></div></label>
+   <div class="meta">${x.id}<br>~${x.m}m<button type="button">${sk?"Unskip":"Skip"}</button></div>`;
+  el.querySelector(".t").textContent=x.t; el.querySelector(".d").textContent=x.d;
+  el.querySelector("input").addEventListener("change",e=>toggle(x.id,e.target.checked));
+  el.querySelector("button").addEventListener("click",()=>skip(x.id));
+  return el;
+}
+
+function render(){
+  // target selector
+  const seg=document.getElementById("seg"); seg.innerHTML="";
+  for(let i=1;i<=MAX;i++){const b=document.createElement("button");b.textContent=i;b.setAttribute("aria-pressed",S.target===i);b.setAttribute("aria-label",`Target ${i} per day`);
+    b.onclick=()=>{S.target=i;showExtra=false;save();render();};seg.appendChild(b);}
+  const dt=doneToday(), open=TASKS.filter(isOpen), finished=TASKS.length-open.length;
+  // stats
+  document.getElementById("sDone").textContent=`${Object.keys(S.done).length}/${TASKS.length}`;
+  document.getElementById("sToday").textContent=`${dt}/${S.target}`;
+  let streak=0; const days=new Set(Object.values(S.done)); let i=days.has(today())?0:1; while(days.has(daysAgo(i))){streak++;i++;}
+  document.getElementById("sStreak").textContent=streak;
+  document.getElementById("sLeft").textContent=open.length?Math.ceil(open.length/S.target):"0";
+  document.getElementById("overallBar").style.width=(finished/TASKS.length*100)+"%";
+  // today queue
+  const notice=document.getElementById("todayNotice"), list=document.getElementById("todayList"); list.innerHTML="";
+  const doneTodayTasks=TASKS.filter(x=>S.done[x.id]===today());
+  let remaining;
+  if(dt>=MAX){notice.innerHTML=`<div class="notice stop"><b>6 of 6 done today.</b> That's the daily max. Close the laptop, let it digest, and come back tomorrow.</div>`;remaining=0;}
+  else if(dt>=S.target){notice.innerHTML=`<div class="notice ok"><b>Target hit: ${dt} done.</b> You can stop here. ${showExtra?"":`<button class="btn" id="moreBtn" style="margin-left:6px">Show ${MAX-dt} optional more</button>`}</div>`;
+    remaining=showExtra?MAX-dt:0; const mb=document.getElementById("moreBtn"); if(mb) mb.onclick=()=>{showExtra=true;render();};}
+  else {notice.innerHTML=dt?"":`<p class="hint" style="margin:0 0 10px">Start with the first task. Each one is about 15–20 minutes.</p>`; remaining=S.target-dt;}
+  doneTodayTasks.forEach(x=>list.appendChild(taskRow(x,true)));
+  open.slice(0,remaining).forEach(x=>list.appendChild(taskRow(x,true)));
+  if(!open.length) list.innerHTML=`<p style="padding:12px 0">Every task is done or skipped. You made it.</p>`;
+  if(!list.children.length) list.innerHTML=`<p class="hint" style="padding:12px 0">Nothing queued.</p>`;
+  // recall
+  const rec=TASKS.filter(x=>[daysAgo(3),daysAgo(7)].includes(S.done[x.id])).slice(0,4);
+  const rb=document.getElementById("recallBox"); rb.hidden=!rec.length;
+  document.getElementById("recallList").innerHTML=""; rec.forEach(x=>{const li=document.createElement("li");li.textContent=`${x.t} (${x.id})`;document.getElementById("recallList").appendChild(li);});
+  // roadmap
+  const ph=document.getElementById("phases"); const openState={}; ph.querySelectorAll("details").forEach(d=>openState[d.dataset.n]=d.open); ph.innerHTML="";
+  const firstOpenPhase=open[0]?.phase.n;
+  ROADMAP.forEach(p=>{
+    const pts=TASKS.filter(x=>x.phase===p), fin=pts.filter(x=>!isOpen(x)).length, mins=pts.reduce((a,x)=>a+x.m,0);
+    const d=document.createElement("details"); d.className="phase"; d.dataset.n=p.n; d.open=openState[p.n]??(p.n===firstOpenPhase);
+    d.innerHTML=`<summary><span class="pn">${p.n}</span><span style="min-width:0"><div class="ph"></div><div class="pg"></div></span><span class="pc">${fin}/${pts.length}<div class="bar"><i style="width:${fin/pts.length*100}%"></i></div></span></summary><div class="pbody"></div>`;
+    d.querySelector(".ph").textContent=p.name; d.querySelector(".pg").textContent=`${p.goal} · ${pts.length} tasks · ~${Math.round(mins/60)} h`;
+    const body=d.querySelector(".pbody");
+    p.mods.forEach(([mname])=>{const h=document.createElement("div");h.className="mod";h.textContent=mname;body.appendChild(h);
+      const box=document.createElement("div"); pts.filter(x=>x.mod===mname).forEach(x=>box.appendChild(taskRow(x,false))); body.appendChild(box);});
+    ph.appendChild(d);
+  });
+}
+
+// tabs
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["today","map","rules"].forEach(t=>document.getElementById("p-"+t).hidden=(t!==b.dataset.tab));
+}));
+// backup
+document.getElementById("copyBtn").onclick=()=>{const ta=document.getElementById("backupText");
+  navigator.clipboard.writeText(ta.value).then(()=>document.getElementById("backupMsg").textContent="Copied.").catch(()=>{ta.select();document.getElementById("backupMsg").textContent="Selected. Press Ctrl/Cmd+C.";});};
+document.getElementById("restoreBtn").onclick=()=>{try{const o=JSON.parse(decodeURIComponent(escape(atob(document.getElementById("backupText").value.trim()))));
+  if(!o||typeof o.done!=="object") throw 0; S={done:o.done||{},skip:o.skip||{},target:Math.min(MAX,Math.max(1,o.target||3))}; save(); render(); document.getElementById("backupMsg").textContent="Progress restored.";}
+  catch(e){document.getElementById("backupMsg").textContent="That code isn't valid. Paste the full code you copied earlier.";}};
+
+save(); render();
+</script>
+
+</body></html>
